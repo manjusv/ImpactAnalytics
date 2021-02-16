@@ -14,7 +14,7 @@ def getRaiseDropPoints(input):
     i = 0
     for i in range(n):
         for j in range(input[i][0], input[i][1] + 1):
-            if(j in xPoints and j not in points.keys()):
+            if(j in xPoints):
                 # possiblePoints = PossiblePoints()
                 possiblePoints = {}
                 possiblePoints['height']= input[i][2]
@@ -23,7 +23,10 @@ def getRaiseDropPoints(input):
                 else:
                     possiblePoints['isEdge'] = False
                 # print(f"for x={j}, dict:{possiblePoints}")
-                points[j] = possiblePoints
+                if j not in points.keys():
+                    points[j] = [possiblePoints]
+                else:
+                    points[j].append(possiblePoints)
 
     print("points dict: {}".format(points))
 
@@ -34,13 +37,15 @@ def getRaiseDropPoints(input):
     for x in xPoints:
         random = points[x]
         found = False
-        if(random['height'] == lastHeight and random['isEdge'] == False):
+        if(random[0]['height'] == lastHeight and random[0]['isEdge'] == False):
             continue
 
-        if(random['height'] != lastHeight):
-            print(f"{x} and {random['height']}")
-            lastHeight = random['height']
-            found = True
+        for y in random:
+            if(y['height'] != lastHeight):
+                print(f"{x} and {y['height']}")
+                lastHeight = y['height']
+                found = True
+                break
 
         if(found == False):
             print(f"{x} and {0}")
